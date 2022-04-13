@@ -23,15 +23,44 @@ export default {
   },
   data() {
     return {
-      remainingSeconds: this.seconds
+      remainingSeconds: this.seconds,
+      timerRunning: false
     }
   },
   computed: {
     formattedRemainigTime() {
       const { hours, minutes, seconds } = secondsToHoursMinutesAndSeconds(this.remainingSeconds)
       return formatTime(hours, minutes, seconds)
+    },
+    button() {
+      return this.timerRunning ? 'pause_circle' : 'play_circle'
     }
   },
+  methods: {
+    toggleTimer() {
+      this.timerRunning = !this.timerRunning
+      if (this.timerRunning) {
+        this.startTimer()
+      } else {
+        this.pauseTimer()
+      }
+    },
+    startTimer() {
+      this.timer = setInterval(() => {
+        this.remainingSeconds++
+        // if (this.remainingSeconds <= 0) {
+        //   this.stopTimer()
+        // }
+      }, 1000)
+    },
+    pauseTimer() {
+      clearInterval(this.timer)
+    },
+    stop() {
+      console.log('stop')
+      this.$emit('stop', this.remainingSeconds)
+    }
+  }
 }
 </script>
 
@@ -40,8 +69,8 @@ export default {
     <div class="h1">{{ title }}</div>
     <div class="time">{{ formattedRemainigTime }}</div>
     <div class="buttons">
-      <span class="material-icons-round">play_circle</span>
-      <span class="material-icons-round">stop_circle</span>
+      <span class="material-icons-round" @click="toggleTimer">{{ button }}</span>
+      <span class="material-icons-round" @click="stop">stop_circle</span>
     </div>
   </div>
 </template>

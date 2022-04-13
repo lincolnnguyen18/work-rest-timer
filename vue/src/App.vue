@@ -14,11 +14,28 @@ const hoursMinutesToSeconds = (hours, minutes, seconds) => {
 export default {
   data() {
     return {
-      message: 'Hello Vue!'
+      ratioIndex: 9,
     }
   },
   components: {
     Timer, Card
+  },
+  methods: {
+    updateRatio() {
+      console.log(this.ratioIndex)
+    },
+    workStopped(remainingSeconds) {
+      console.log(remainingSeconds)
+    }
+  },
+  computed: {
+    ratioString() {
+      let ratio = ratios[this.ratioIndex].split(":")
+      let ratio1plural = ratio[0] > 1 ? "s" : ""
+      let ratio2plural = ratio[1] > 1 ? "s" : ""
+      // 1 minute of work = 10 minutes of rest
+      return `${ratio[0]} minute${ratio1plural} of work = ${ratio[1]} minute${ratio2plural} of rest`
+    },
   }
 }
 </script>
@@ -28,15 +45,15 @@ export default {
     <span class="h1">Work Rest Timer</span>
     <div class="slidecontainer">
       <div>Work Rest Ratio</div>
-      <input type="range" min="0" max="18" value="9" class="slider">
-      <div>1 minute of work = 10 minutes of rest</div>
+      <input type="range" min="0" max="18" class="slider" v-model="ratioIndex">
+      <div>{{ ratioString }}</div>
     </div>
     <div class="bottom">
-      <Timer title="Worked" seconds="10"></Timer>
+      <Timer title="Worked" :seconds="0" @stop="workStopped"></Timer>
       <span class="material-icons-round arrow">keyboard_double_arrow_right</span>
-      <Card title="Rest Earned" seconds="10"></Card>
+      <Card title="Rest Earned" :seconds="10"></Card>
       <span class="material-icons-round arrow">keyboard_double_arrow_right</span>
-      <Timer title="Rest" seconds="10"></Timer>
+      <Timer title="Rest" :seconds="10"></Timer>
     </div>
   </div>
 </template>
