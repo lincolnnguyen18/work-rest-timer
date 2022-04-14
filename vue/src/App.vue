@@ -27,6 +27,7 @@ export default {
     restStopped() {
       this.store.workSeconds = 0
       this.store.restSeconds = 0
+      this.store.earnedRestSeconds = 0
       this.mode = 'work'
     }
   },
@@ -38,6 +39,11 @@ export default {
       // 1 minute of work = 10 minutes of rest
       return `${ratio[0]} minute${ratio1plural} of work = ${ratio[1]} minute${ratio2plural} of rest`
     },
+    progressStyle() {
+      return {
+        width: `${(this.store.earnedRestSeconds != 0) ? ((this.store.earnedRestSeconds - this.store.restSeconds) / this.store.earnedRestSeconds * 100) : 0}%`
+      }
+    }
   },
   mounted() {
     if (Notification.permission !== "granted") { Notification.requestPermission(); }
@@ -46,6 +52,7 @@ export default {
 </script>
 
 <template>
+  <div class="progressbar" ref="progressbar" :style="progressStyle"></div>
   <div class="container">
     <span class="h1">Work Rest Timer</span>
     <div class="slidecontainer" :class="{ 'disabled': mode !== 'work' }">
@@ -128,5 +135,13 @@ input[type=range]::-webkit-slider-thumb {
 .arrow {
   font-size: 64px;
   pointer-events: none;
+}
+.progressbar {
+  width: 0;
+  height: 3px;
+  background: white;
+  position: fixed;
+  top: 0;
+  transition: width 0.1s ease;
 }
 </style>
