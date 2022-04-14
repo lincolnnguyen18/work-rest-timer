@@ -1,37 +1,16 @@
 <script>
-const formatTime = (hours, minutes, seconds) => {
-  return [hours, minutes, seconds]
-    .map(v => v < 10 ? '0' + v : v)
-    .join(':')
-}
-const secondsToHoursMinutesAndSeconds = (seconds) => {
-  let hours = Math.floor(seconds / 3600)
-  let minutes = Math.floor((seconds - (hours * 3600)) / 60)
-  seconds = seconds - (hours * 3600) - (minutes * 60)
-  return { hours, minutes, seconds }
-}
+import { useMainStore } from './store'
 export default {
-  props: {
-    title: {
-      type: String,
-      required: true
-    },
-    seconds: {
-      type: Number,
-      required: true
-    }
+  setup() {
+    const store = useMainStore()
+    return { store }
   },
   data() {
     return {
-      remainingSeconds: this.seconds,
       timerRunning: false
     }
   },
   computed: {
-    formattedRemainigTime() {
-      const { hours, minutes, seconds } = secondsToHoursMinutesAndSeconds(this.remainingSeconds)
-      return formatTime(hours, minutes, seconds)
-    },
     button() {
       return this.timerRunning ? 'pause_circle' : 'play_circle'
     }
@@ -47,18 +26,17 @@ export default {
     },
     startTimer() {
       this.timer = setInterval(() => {
-        this.remainingSeconds++
-        // if (this.remainingSeconds <= 0) {
-        //   this.stopTimer()
-        // }
+        this.store.workSeconds++
+        this.store.restSeconds = this.store.earnedRestSeconds;
       }, 1000)
     },
     pauseTimer() {
+      this.timerRunning = false
       clearInterval(this.timer)
     },
     stop() {
-      console.log('stop')
-      this.$emit('stop', this.remainingSeconds)
+      this.pauseTimer()
+      this.$emit('stop')
     }
   }
 }
@@ -66,8 +44,8 @@ export default {
 
 <template>
   <div class="timer">
-    <div class="h1">{{ title }}</div>
-    <div class="time">{{ formattedRemainigTime }}</div>
+    <div class="h1">Worked</div>
+    <div class="time">{{ store.workTime }}</div>
     <div class="buttons">
       <span class="material-icons-round" @click="toggleTimer">{{ button }}</span>
       <span class="material-icons-round" @click="stop">stop_circle</span>

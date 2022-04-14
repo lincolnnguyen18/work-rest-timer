@@ -1,41 +1,45 @@
 <script>
-import Timer from './Timer.vue'
+import WorkTimer from './WorkTimer.vue'
+import RestTimer from './RestTimer.vue'
 import Card from './Card.vue'
-const ratios = ["1:10", "1:9", "1:8", "1:7", "1:6", "1:5", "1:4", "1:3", "1:2", "1:1", "2:1", "3:1", "4:1", "5:1", "6:1", "7:1", "8:1", "9:1", "10:1"]
-const workToRest = (ratio, workTime) => {
-  let [work, rest] = ratio.split(":")
-  ratio = rest / work
-  let restTime = workTime * ratio
-  return restTime
-}
-const hoursMinutesToSeconds = (hours, minutes, seconds) => {
-  return hours * 3600 + minutes * 60 + seconds
-}
+import { useMainStore } from './store'
 export default {
+  setup() {
+    const store = useMainStore()
+    return { store }
+  },
   data() {
     return {
-      ratioIndex: 9,
+      mode: 'work'
     }
   },
   components: {
-    Timer, Card
+    WorkTimer, Card, RestTimer
   },
   methods: {
-    updateRatio() {
-      console.log(this.ratioIndex)
+    // updateRatio() {
+    //   console.log(this.store.ratioIndex)
+    // },
+    workStopped() {
+      this.mode = 'rest'
     },
-    workStopped(remainingSeconds) {
-      console.log(remainingSeconds)
+    restStopped() {
+      this.store.workSeconds = 0
+      this.store.restSeconds = 0
+      this.mode = 'work'
     }
   },
   computed: {
     ratioString() {
-      let ratio = ratios[this.ratioIndex].split(":")
+      let ratio = this.store.currentRatio.split(':')
       let ratio1plural = ratio[0] > 1 ? "s" : ""
       let ratio2plural = ratio[1] > 1 ? "s" : ""
       // 1 minute of work = 10 minutes of rest
       return `${ratio[0]} minute${ratio1plural} of work = ${ratio[1]} minute${ratio2plural} of rest`
     },
+  },
+  mounted() {
+    if (Notification.permission !== "granted") { Notification.requestPermission(); }
   }
 }
 </script>
@@ -43,22 +47,29 @@ export default {
 <template>
   <div class="container">
     <span class="h1">Work Rest Timer</span>
-    <div class="slidecontainer">
+    <div class="slidecontainer" :class="{ 'disabled': mode !== 'work' }">
       <div>Work Rest Ratio</div>
-      <input type="range" min="0" max="18" class="slider" v-model="ratioIndex">
+      <!-- <input type="range" min="0" max="18" class="slider" v-model="store.ratioIndex" @input="updateRatio"> -->
+      <input type="range" min="0" :max="store.ratios.length - 1" class="slider" v-model="store.ratioIndex">
       <div>{{ ratioString }}</div>
     </div>
     <div class="bottom">
-      <Timer title="Worked" :seconds="0" @stop="workStopped"></Timer>
-      <span class="material-icons-round arrow">keyboard_double_arrow_right</span>
+      <WorkTimer @stop="workStopped" :class="{ 'disabled': mode !== 'work' }"></WorkTimer>
+      <span class="material-icons-round arrow" :class="{ 'disabled': mode !== 'work' }">keyboard_double_arrow_right</span>
       <Card title="Rest Earned" :seconds="10"></Card>
-      <span class="material-icons-round arrow">keyboard_double_arrow_right</span>
-      <Timer title="Rest" :seconds="10"></Timer>
+      <span class="material-icons-round arrow" :class="{ 'disabled': mode !== 'rest' }">keyboard_double_arrow_right</span>
+      <RestTimer :class="{ 'disabled': mode !== 'rest' }" @stop="restStopped"></RestTimer>
     </div>
   </div>
 </template>
 
 <style>
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  user-select: none;
+  transition: opacity 0.3s ease;
+}
 html, body, #app {
   padding: 0;
   margin: 0;

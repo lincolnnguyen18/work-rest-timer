@@ -1,44 +1,23 @@
 <script>
-const formatTime = (hours, minutes, seconds) => {
-  return [hours, minutes, seconds]
-    .map(v => v < 10 ? '0' + v : v)
-    .join(':')
-}
-const secondsToHoursMinutesAndSeconds = (seconds) => {
-  let hours = Math.floor(seconds / 3600)
-  let minutes = Math.floor((seconds - (hours * 3600)) / 60)
-  seconds = seconds - (hours * 3600) - (minutes * 60)
-  return { hours, minutes, seconds }
-}
+import { useMainStore } from './store'
 export default {
+  setup() {
+    const store = useMainStore()
+    return { store }
+  },
   props: {
     title: {
       type: String,
       required: true
-    },
-    seconds: {
-      type: Number,
-      required: true
     }
-  },
-  data() {
-    return {
-      remainingSeconds: this.seconds
-    }
-  },
-  computed: {
-    formattedRemainigTime() {
-      const { hours, minutes, seconds } = secondsToHoursMinutesAndSeconds(this.remainingSeconds)
-      return formatTime(hours, minutes, seconds)
-    }
-  },
+  }
 }
 </script>
 
 <template>
   <div class="timer">
     <div class="h1">{{ title }}</div>
-    <div class="time">{{ formattedRemainigTime }}</div>
+    <div class="time">{{ store.earnedRestTime }}</div>
   </div>
 </template>
 

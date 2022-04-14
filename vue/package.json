@@ -4,9 +4,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview --port 5050"
+    "preview": "vite preview --port 7009"
   },
   "dependencies": {
+    "pinia": "^2.0.13",
     "vue": "^3.2.31"
   },
   "devDependencies": {

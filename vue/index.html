@@ -8,6 +8,19 @@
     <title>Vite App</title>
   </head>
   <body>
+    <script>
+      let beep = new Audio('/beep.mp3');
+      const notify = async (message) => {
+        beep.play();
+        let notification = new Notification("Work Rest Timer", {
+          body: message
+        });
+        notification.onclick = () => {
+          window.focus();
+          notification.close();
+        }
+      }
+    </script>
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
   </body>
