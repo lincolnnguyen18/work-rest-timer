@@ -26,13 +26,15 @@ const hoursMinutesSecondsToSeconds = (hours, minutes, seconds) => {
   return hours * 3600 + minutes * 60 + seconds
 }
 // const ratios = ["1:10", "1:9", "1:8", "1:7", "1:6", "1:5", "1:4", "1:3", "1:2", "1:1", "2:1", "3:1", "4:1", "5:1", "6:1", "7:1", "8:1", "9:1", "10:1"]
+// ratios: ["1:5", "1:4", "1:3", "1:2", "1:1", "2:1", "3:1", "4:1", "5:1"]
+const ratiosData = ["1:3", "1:2", "1:1", "2:1", "3:1"]
 
 export const useMainStore = defineStore('mainStore', {
   state: () => ({
     workSeconds: 0,
     restSeconds: 0,
-    ratioIndex: 4,
-    ratios: ["1:5", "1:4", "1:3", "1:2", "1:1", "2:1", "3:1", "4:1", "5:1"]
+    ratios: ratiosData,
+    ratioIndex: Math.floor(ratiosData.length / 2)
   }),
   getters: {
     workTime() {
