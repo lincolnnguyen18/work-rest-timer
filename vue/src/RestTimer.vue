@@ -28,7 +28,8 @@ export default {
     startTimer() {
       this.timer = setInterval(() => {
         this.store.restSeconds--
-        if (this.store.restSeconds === 0) {
+        if (this.store.restSeconds <= 0) {
+          this.store.restSeconds = 0
           notify('Rest time is over!')
           this.pauseTimer()
         }
