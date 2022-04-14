@@ -17,9 +17,10 @@ export default {
     WorkTimer, Card, RestTimer
   },
   methods: {
-    // updateRatio() {
-    //   console.log(this.store.ratioIndex)
-    // },
+    updateRatio() {
+      // console.log(this.store.ratioIndex)
+      this.store.restSeconds = this.store.earnedRestSeconds;
+    },
     workStopped() {
       this.mode = 'rest'
     },
@@ -50,7 +51,7 @@ export default {
     <div class="slidecontainer" :class="{ 'disabled': mode !== 'work' }">
       <div>Work Rest Ratio</div>
       <!-- <input type="range" min="0" max="18" class="slider" v-model="store.ratioIndex" @input="updateRatio"> -->
-      <input type="range" min="0" :max="store.ratios.length - 1" class="slider" v-model="store.ratioIndex">
+      <input type="range" min="0" :max="store.ratios.length - 1" class="slider" v-model="store.ratioIndex" @input="updateRatio">
       <div>{{ ratioString }}</div>
     </div>
     <div class="bottom">
