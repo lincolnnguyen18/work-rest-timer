@@ -27,7 +27,6 @@ export default {
     restStopped() {
       this.store.workSeconds = 0
       this.store.restSeconds = 0
-      this.store.earnedRestSeconds = 0
       this.mode = 'work'
     }
   },

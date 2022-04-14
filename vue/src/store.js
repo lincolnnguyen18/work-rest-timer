@@ -16,11 +16,11 @@ const formatSeconds = (secondsIn) => {
   const { hours, minutes, seconds } = secondsToHoursMinutesAndSeconds(secondsIn)
   return formatTime(hours, minutes, seconds)
 }
-const workToRest = (ratio, workTime) => {
+const workToRest = (ratio, workSeconds) => {
   let [work, rest] = ratio.split(":")
   ratio = rest / work
-  let restTime = workTime * ratio
-  return restTime
+  let restSeconds = workSeconds * ratio
+  return restSeconds
 }
 const hoursMinutesSecondsToSeconds = (hours, minutes, seconds) => {
   return hours * 3600 + minutes * 60 + seconds
