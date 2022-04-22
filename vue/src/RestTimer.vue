@@ -20,21 +20,21 @@ export default {
       if (this.store.restSeconds == 0) return;
       this.timerRunning = !this.timerRunning
       if (this.timerRunning) {
-        this.startTimer()
+        // this.startTimer()
       } else {
         this.pauseTimer()
       }
     },
-    startTimer() {
-      this.timer = setInterval(() => {
-        this.store.restSeconds--
-        if (this.store.restSeconds <= 0) {
-          this.store.restSeconds = 0
-          notify('Rest time is over!')
-          this.pauseTimer()
-        }
-      }, 1000)
-    },
+    // startTimer() {
+    //   this.timer = setInterval(() => {
+    //     this.store.restSeconds--
+    //     if (this.store.restSeconds <= 0) {
+    //       this.store.restSeconds = 0
+    //       notify('Rest time is over!')
+    //       this.pauseTimer()
+    //     }
+    //   }, 1000)
+    // },
     pauseTimer() {
       this.timerRunning = false
       clearInterval(this.timer)
@@ -43,7 +43,21 @@ export default {
       this.pauseTimer()
       this.$emit('stop')
     }
-  }
+  },
+  mounted() {
+    if (typeof(w) == "undefined") { this.w = new Worker("/public/worker.js"); }
+    this.w.onmessage = (e) => {
+      // let date = e.data;
+      if (this.timerRunning) {
+        this.store.restSeconds -= 1
+        if (this.store.restSeconds <= 0) {
+          this.store.restSeconds = 0
+          notify('Rest time is over!')
+          this.pauseTimer()
+        }
+      }
+    }
+  },
 }
 </script>
 
