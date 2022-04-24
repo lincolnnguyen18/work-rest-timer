@@ -45,7 +45,7 @@ export default {
     }
   },
   mounted() {
-    if (typeof(w) == "undefined") { this.w = new Worker("/public/worker.js"); }
+    if (typeof(w) == "undefined") { this.w = new Worker("/worker.js"); }
     this.w.onmessage = (e) => {
       // let date = e.data;
       if (this.timerRunning) {
